@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
@@ -14,20 +14,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DateAndTimePickers() {
+export default function DateAndTimePickers({data , valueHandler , readyValue}) {
+
+  const [value,setValue] = useState('2017-05-24T10:30')
   const classes = useStyles();
+  const [ready,setReady] = useState(false)
+
+  const changeHandler = e => {
+
+    setValue(e.target.value)
+    setReady(true)
+    if(!readyValue){
+      data(true)
+    }
+    
+  }
+
+
+  if(ready){
+    valueHandler(value)
+    setReady(false)
+  }
 
   return (
-    <form className={classes.container} noValidate style={{display: 'inline'  , position: 'relative' , top: -128, left:  250}}>
+    <form className={classes.container} noValidate >
       <TextField
         id="datetime-local"
         label="To be Completed by..."
         type="datetime-local"
-        disablePast
         className={classes.textField}
         InputLabelProps={{
           shrink: true,
         }}
+        value={value}
+        onChange={e=> {changeHandler(e)}}
       />
     </form>
   );

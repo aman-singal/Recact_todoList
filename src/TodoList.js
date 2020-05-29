@@ -47,9 +47,9 @@ const deleteClickHandler = (index) =>{
     option2="Yes"
     para="Clicking on the yes will permanenetly delete the task, 
     are you sure this is what you wanna do!!?"/>
-    {todos.map((todo, index) => (
-      <ListItem key={index.toString()} dense button >
-        <Checkbox tabIndex={-1} disableRipple />
+    {todos.map((todo) => (
+      <ListItem key={todo.unique} dense button >
+        {/* <Checkbox tabIndex={-1} disableRipple /> */}
         <ListItemIcon style={{position: 'absolute' , left: 555}}>
           <IconButton
             aria-label="Edit"
@@ -59,11 +59,11 @@ const deleteClickHandler = (index) =>{
             <EditIcon />
           </IconButton>
         </ListItemIcon>
-        <ListItemText primary={todo} />
+        <ListItemText primary={todo.title} />
         <ListItemSecondaryAction >
           <IconButton
             aria-label="Delete"
-            onClick={()=>{deleteClickHandler(index)}}
+            onClick={()=>{deleteClickHandler(todo.unique)}}
           >
             <DeleteIcon />
           </IconButton>

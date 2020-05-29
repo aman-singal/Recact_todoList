@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
-import useInputState from './useInputState';
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import {Dispatch} from './index'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -17,40 +15,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TodoForm = ({ saveTodo }) => {
-  const { value, reset, onChange } = useInputState();
+export const TodoForm = ({data , valueHandler , readyValue}) => {
+  const dispatch = useContext(Dispatch)
+  const [value,setValue] = useState('')
   const classes = useStyles();
+  const [ready,setReady] = useState(false)
 
-
-  const clickHandler = () =>{
-    saveTodo(value)
-    reset()
+  const textHandler = (e) =>{
+    setValue(e.target.value)
+    setReady(true)
   }
 
-  return (
-    <form
-      onSubmit={event => {
-        event.preventDefault();
+  if(value.length >1 ){
+    if(!readyValue){
+      data(true)
+    }
+    if(ready){
+      valueHandler(value)
+      setReady(false)
+    }
+  }
 
-        saveTodo(value);
-        reset();
-      }}
-    >
-      <TextField
-        variant="outlined"
-        placeholder="Add todo"
-        margin="normal"
-        onChange={onChange}
-        value={value}
+
+  return (
+    <form>
+      <TextField 
+      id="outlined-basic" 
+      label="Title" 
+      variant="outlined"
+      margin="normal"
+      onChange={e=> {textHandler(e)}}
+      value={value}
+      placeholder="Add Title"
       />
-      <div className={classes.root}>
-        <Fab color="primary" aria-label="add" onClick={clickHandler}>
-          <AddIcon />
-        </Fab>
-      </div>
 
     </form>
   );
 };
 
-export default TodoForm;
+

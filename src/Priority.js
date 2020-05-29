@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -16,22 +16,35 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-  export default function Priority() {
+  export default function Priority({data , valueHandler , readyValue}) {
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
-  
+    const [value, setValue] = React.useState('');
+    const [ready,setReady] = useState(false)
+
+
     const handleChange = (event) => {
-      setAge(event.target.value);
+      setValue(event.target.value);
+      if(!readyValue){
+        data(true)
+      }
+      setReady(true)
     };
   
+    if(ready){
+      valueHandler(value)
+      setReady(false)
+    }
+    
+
+
     return (
-      <div style={{display: 'inline', position: 'relative', top: -205, left: -200}}>
+      <div >
         <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Priority</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={age}
+            value={value}
             onChange={handleChange}
           >
             <MenuItem value={'High'}> High</MenuItem>
