@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
     const [value, setValue] = React.useState('');
     const [ready,setReady] = useState(false)
 
+    useEffect(() => {
+      if(ready){
+        valueHandler(value, 'priority')
+        setReady(false)
+      }
+    })
 
     const handleChange = (event) => {
       setValue(event.target.value);
@@ -30,10 +36,7 @@ const useStyles = makeStyles((theme) => ({
       setReady(true)
     };
   
-    if(ready){
-      valueHandler(value)
-      setReady(false)
-    }
+    
     
 
 

@@ -32,37 +32,48 @@ function getSteps() {
 }
 
 
-export  function HeaderDialog() {
+export function HeaderDialog({openHandle}) {
 
   const [ready , setReady] = useState(false)
-  const dispatch = useContext(Dispatch)
 
-  function dispatchValue (childData){
-    dispatch({type: 'title' , payload: {childData}})
+  const readyFunction = (item) =>{
+    setReady((initValue)=>{
+      return( item)
+    })
   }
 
+  const {value} = useContext(Dispatch)
+  const [sendValue,setSendValue] = useState('')
 
+  const [dispatch,lastStep,setLastStep] = value
+
+  function dispatchValue (childData, childData2){
+    console.log(childData2)
+    dispatch({type: {childData2} , payload: {childData}})
+  }
+
+  
   function getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
         return (
-          <TodoForm  data={setReady} valueHandler={dispatchValue} readyValue={ready} />
+          <TodoForm  data={readyFunction} valueHandler={dispatchValue} readyValue={ready} />
         )
       case 1:
         return (
-          <DateandTime  data={setReady} valueHandler={dispatchValue} readyValue={ready}/>
+          <DateandTime  data={readyFunction} valueHandler={dispatchValue} readyValue={ready}/>
         )
       case 2:
           return (
-            <Priority  data={setReady} valueHandler={dispatchValue} readyValue={ready}/>
+            <Priority  data={readyFunction} valueHandler={dispatchValue} readyValue={ready}/>
           )
       case 3:
         return (
-          <Label  data={setReady} valueHandler={dispatchValue} readyValue={ready}/>
+          <Label  data={readyFunction} valueHandler={dispatchValue} readyValue={ready}/>
         )
         case 4:
           return (
-            <Milestone  data={setReady} valueHandler={dispatchValue} readyValue={ready}/>
+            <Milestone  data={readyFunction} valueHandler={dispatchValue} readyValue={ready}/>
           )
       default:
         return 'Unknown stepIndex';
@@ -70,8 +81,6 @@ export  function HeaderDialog() {
   
   }
 
-
-  
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
@@ -82,12 +91,23 @@ export  function HeaderDialog() {
 
       setReady(false)
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
-    else{
+           
+    }else{
       console.log("Forward NOT POSSIBLE")
     }
     
   };
+
+  const handleFinish = () =>{
+    if(ready){
+        setLastStep(true)
+        debugger
+        console.log("Close Initating...")
+        openHandle(false)
+    }else{
+      console.log("Forward NOT POSSIBLE")
+    }
+  }
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -123,9 +143,17 @@ export  function HeaderDialog() {
               >
                 Back
               </Button>
-              <Button variant="contained" color="primary" onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              {activeStep === steps.length - 1 ? 
+                <Button variant="contained" color="primary" onClick={handleFinish}>
+              Finish
               </Button>
+              :
+              <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+              }
+              
+              
             </div>
           </div>
         )}

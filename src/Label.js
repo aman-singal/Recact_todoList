@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState , useEffect} from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -13,6 +13,14 @@ export default function RadioButtonsGroup({data , valueHandler , readyValue}) {
   const [label,setLabel] = useState(["work" , 'home'  , 'personal'])
   const [change,setChange] = useState('')
   const [ready,setReady] = useState(false)
+
+
+  useEffect(() => {
+    if(ready){
+      valueHandler(value, 'label')
+      setReady(false)
+    }
+  })
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -34,10 +42,7 @@ export default function RadioButtonsGroup({data , valueHandler , readyValue}) {
       }
   }
 
-  if(ready){
-    valueHandler(value)
-    setReady(false)
-  }
+  
 
   return (
     <FormControl component="fieldset">

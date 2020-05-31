@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
@@ -20,6 +20,14 @@ export default function DateAndTimePickers({data , valueHandler , readyValue}) {
   const classes = useStyles();
   const [ready,setReady] = useState(false)
 
+  useEffect(() => {
+    if(ready){
+      valueHandler(value , 'date')
+      setReady(false)
+    }
+    
+  })
+
   const changeHandler = e => {
 
     setValue(e.target.value)
@@ -31,10 +39,7 @@ export default function DateAndTimePickers({data , valueHandler , readyValue}) {
   }
 
 
-  if(ready){
-    valueHandler(value)
-    setReady(false)
-  }
+  
 
   return (
     <form className={classes.container} noValidate >

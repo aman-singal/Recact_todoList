@@ -23,16 +23,13 @@ function DialogPrimary({openStatus , openHandle}) {
   }
   return (
     <div>
-      {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button> */}
+
       <Dialog
         open={openStatus}
         // onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullWidth={true}
-        
         classes={styles.dialogPaper}
       >
         <DialogTitle id="alert-dialog-title">New Task</DialogTitle>
@@ -40,7 +37,7 @@ function DialogPrimary({openStatus , openHandle}) {
           <DialogContentText id="alert-dialog-description">
            
           </DialogContentText>
-          <HeaderDialog />
+          <HeaderDialog openHandle={openHandle} />
         </DialogContent>
         <DialogActions>
 

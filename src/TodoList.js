@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -11,12 +11,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DialogBox from './DialogBox'
 import TransitionAlerts from './TransitionAlerts'
 
-function TodoList({ todos, deleteTodo }) {
+function TodoList({ todos, deleteTodo  }) {
+
 
 
 const [open,setOpen] = useState(false)
 const [logIndex,setLogIndex] = useState(-1)
 const [alert,setAlert] = useState(false)
+
 
 const dataRec = (childData)=>{
   if(childData === 'no'){
@@ -35,6 +37,7 @@ const deleteClickHandler = (index) =>{
 
   setOpen(true)
   setLogIndex(index)
+
 }
 
   return (
@@ -47,9 +50,8 @@ const deleteClickHandler = (index) =>{
     option2="Yes"
     para="Clicking on the yes will permanenetly delete the task, 
     are you sure this is what you wanna do!!?"/>
-    {todos.map((todo) => (
-      <ListItem key={todo.unique} dense button >
-        {/* <Checkbox tabIndex={-1} disableRipple /> */}
+    {todos.map((todo, index) => (
+      <ListItem key={index.toString()} dense button >
         <ListItemIcon style={{position: 'absolute' , left: 555}}>
           <IconButton
             aria-label="Edit"
@@ -59,11 +61,11 @@ const deleteClickHandler = (index) =>{
             <EditIcon />
           </IconButton>
         </ListItemIcon>
-        <ListItemText primary={todo.title} />
+        <ListItemText primary={todo} />
         <ListItemSecondaryAction >
           <IconButton
             aria-label="Delete"
-            onClick={()=>{deleteClickHandler(todo.unique)}}
+            onClick={()=>{deleteClickHandler(index)}}
           >
             <DeleteIcon />
           </IconButton>

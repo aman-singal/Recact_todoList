@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,15 +26,21 @@ export default function FloatingActionButtons({data , valueHandler , readyValue}
   let id = shortid.generate()
   const [value,setValue] = useState('')
   const [ready,setReady] = useState(false)
+  const [currentMile,setCurrentMile] = useState('')
+
+  useEffect(() => {
+    if(ready){
+      valueHandler(milestone , 'milestone')
+      setReady(false)
+    }
+  })
 
   const addHandler = () =>{
 
-    setMilestone([...milestone , {
-      title: {value},
-      unique: {id}
-    }])
+    setMilestone([...milestone , value])
+    setCurrentMile(value)
     console.log(milestone)
-    debugger
+    
     setValue('')
 
     if(!readyValue){
@@ -43,16 +49,12 @@ export default function FloatingActionButtons({data , valueHandler , readyValue}
     setReady(true)
   }
 
-  if(ready){
-    valueHandler(value)
-    setReady(false)
-  }
+  
 
-  const deleteMilestone = (uid) =>{
-    const newMile = milestone.map((item)=>{
-      return item.uid !== uid
-    })
-    setMilestone(newMile)
+  const deleteMilestone = todoIndex => {
+    const newMilestone = milestone.filter((_, index) => index !== todoIndex);
+    setMilestone(newMilestone)
+    setReady(true)
   }
 
   const classes = useStyles();

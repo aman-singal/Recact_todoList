@@ -1,8 +1,6 @@
-import React, { useReducer, useState, createContext } from 'react';
+import React, { useReducer, useState, createContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Typography from '@material-ui/core/Typography';
-import TodoList from './TodoList';
-import useTodoState from './useTodoState';
 import './styles.css';
 import ButtonPri from './ButtonPri'
 import FilterButton from './FilterButton'
@@ -14,9 +12,19 @@ export const Dispatch = createContext()
 const App = () => {
 
   const [now,setNow] = useState(false)
+  const [lastStep, setLastStep] = useState(false)
 
-
-  const initState = {
+  useEffect(() => {
+    if(now && lastStep){
+      setTodo(stateHandler)
+      console.log("FINAL STATE IS PUSHING")
+      console.log(stateHandler)
+      setNow(false)
+      dispatch({type: 'reset'})
+      setLastStep(false)
+    }
+  })
+  var initState = {
   taskName: '',
   uid: '',
   dateCreated: '',
@@ -30,75 +38,78 @@ const App = () => {
 }
 
   function reducer(state,action){
-    switch(action.type){
+
+    
+
+    switch(action.type.childData2){
       case 'title': 
-      return (
-        state.taskName = action.payload
-      )
+        console.log(state)
+          var newState = state
+          newState.taskName = action.payload.childData
+          return (newState)
+
       case 'date':
-        return (
-          state.expiry = action.payload
-        )
+        console.log(state)
+        var newState = state
+        newState.expiry = action.payload.childData
+        return (newState)
+
       case 'label':
-        return(
-          state.label = action.payload
-        )
+        console.log(state)
+        var newState = state
+        newState.label = action.payload.childData
+        return (newState)
+
       case 'priority':
-        return(
-            state.priority = action.payload
-        )
+        console.log(state)
+        var newState = state
+        newState.priority = action.payload.childData
+        return (newState)
+
       case 'milestone':
+        console.log(state)
         setNow(true)
-        return(
-              state.uid = shortid.generate(),
-              state.milestoneNo = state.milestoneNo + 1,
-              state.milestone.push({
-              title: action.payload,
-              isCompleted: false
-            })   
-        )
+        var newState = state
+        
+        if(state.uid === ''){
+          newState.uid = shortid.generate()
+        }
+        
+        newState.milestoneNo = newState.milestoneNo + 1
+
+        newState.milestone =  action.payload.childData.map(item =>{
+          return (
+            {
+              title: item,
+              isCompleted: false,
+            }
+          )
+        })
+
+        
+        return (newState)
+
       case 'reset':
-        return(
-          state = initState
-        )
+        return(initState)
 
       default:
-        throw new Error();
+        throw new Error("Some Shit Gone Wrong, Please Check It Buddy");
     }
   }
   
 
-  const { todos, addTodo, deleteTodo } = useTodoState([]);
-  const [state,dispatch] = useReducer(reducer,initState)
-  if(now){
-    addTodo(state)
-    setNow(false)
-    dispatch({type: 'reset'})
-  }
+  const [todo,setTodo] = useState([])
+  const [stateHandler,dispatch] = useReducer(reducer,initState)
+  
  
   return (
     <div className="App">
       <Typography component="h1" variant="h2">
         Todos
       </Typography>
-
-      
-
-      {/* <TodoForm
-        saveTodo={todoText => {
-          const trimmedText = todoText.trim();
-
-          if (trimmedText.length > 0) {
-            addTodo(trimmedText);
-          }
-        }}
-      /> */}
-      
-
-      
       <div>
       <div style={{marginTop: 40}}>
-        <Dispatch.Provider value={dispatch}>
+        <Dispatch.Provider value={{value: [dispatch,lastStep,setLastStep]}}>
         <ButtonPri  />
         </Dispatch.Provider>
         <FilterButton />
@@ -107,7 +118,7 @@ const App = () => {
       <div style={{display: "flex", justifyContent: "center"}}>
       <div style={{width: '50%'}}>
       {/* <TodoList todos={todos} deleteTodo={deleteTodo} /> */}
-      {/* <Priority /> */}
+
       </div>
       </div>
     </div>
@@ -117,7 +128,3 @@ const App = () => {
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);
-
-
-
-

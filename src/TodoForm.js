@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState , useEffect} from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import {Dispatch} from './index'
@@ -15,26 +15,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const TodoForm = ({data , valueHandler , readyValue}) => {
+ const TodoForms = ({data , valueHandler , readyValue}) => {
   const dispatch = useContext(Dispatch)
   const [value,setValue] = useState('')
   const classes = useStyles();
+  
   const [ready,setReady] = useState(false)
+
+  useEffect(() => {
+ 
+      if(value.length >1 ){
+        if(!readyValue){
+          console.log("I was Called")
+          data(true)
+        }
+        if(ready){
+          valueHandler(value, 'title')
+          setReady(false)
+        }
+      }
+  })
 
   const textHandler = (e) =>{
     setValue(e.target.value)
     setReady(true)
   }
 
-  if(value.length >1 ){
-    if(!readyValue){
-      data(true)
-    }
-    if(ready){
-      valueHandler(value)
-      setReady(false)
-    }
-  }
+  
 
 
   return (
@@ -54,3 +61,4 @@ export const TodoForm = ({data , valueHandler , readyValue}) => {
 };
 
 
+export const TodoForm = React.memo(TodoForms)
