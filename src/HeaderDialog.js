@@ -31,7 +31,6 @@ function getSteps() {
   return ['Add Task Title','Add Deadline' ,'Set Priority', 'Add Label' , "Add MileStone"];
 }
 
-
 export function HeaderDialog({openHandle}) {
 
   const [ready , setReady] = useState(false)
@@ -43,13 +42,13 @@ export function HeaderDialog({openHandle}) {
   }
 
   const {value} = useContext(Dispatch)
-  const [sendValue,setSendValue] = useState('')
+
 
   const [dispatch,lastStep,setLastStep] = value
 
   function dispatchValue (childData, childData2){
-    console.log(childData2)
-    dispatch({type: {childData2} , payload: {childData}})
+    
+    dispatch({type: childData2 , payload: childData})
   }
 
   
@@ -78,7 +77,6 @@ export function HeaderDialog({openHandle}) {
       default:
         return 'Unknown stepIndex';
     }
-  
   }
 
   const classes = useStyles();
@@ -101,7 +99,7 @@ export function HeaderDialog({openHandle}) {
   const handleFinish = () =>{
     if(ready){
         setLastStep(true)
-        debugger
+        
         console.log("Close Initating...")
         openHandle(false)
     }else{
@@ -129,8 +127,7 @@ export function HeaderDialog({openHandle}) {
       <div>
         {activeStep === steps.length ? (
           <div className={classes.instructions}>
-             All steps completed
-            <Button onClick={handleReset}>Reset</Button>
+ 
           </div>
         ) : (
           <div className={classes.instructions}>
@@ -152,8 +149,6 @@ export function HeaderDialog({openHandle}) {
               Next
             </Button>
               }
-              
-              
             </div>
           </div>
         )}

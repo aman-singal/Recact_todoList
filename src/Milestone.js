@@ -49,8 +49,6 @@ export default function FloatingActionButtons({data , valueHandler , readyValue}
     setReady(true)
   }
 
-  
-
   const deleteMilestone = todoIndex => {
     const newMilestone = milestone.filter((_, index) => index !== todoIndex);
     setMilestone(newMilestone)
@@ -77,7 +75,6 @@ export default function FloatingActionButtons({data , valueHandler , readyValue}
         </Fab>
         </div>
 
-        
         <TodoList todos={milestone} deleteTodo={deleteMilestone} />
           
      

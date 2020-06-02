@@ -5,25 +5,99 @@ import './styles.css';
 import ButtonPri from './ButtonPri'
 import FilterButton from './FilterButton'
 import SortButton from './SortButton'
-const shortid = require('shortid');
+import ExpandList from './ExpandList'
 
+const shortid = require('shortid');
 export const Dispatch = createContext()
 
 const App = () => {
 
+let initTodo = [{  taskName: 'Task 1',
+  uid: 'Task1',
+  dateCreated: '',
+  expiry: '',
+  priority: 'High',
+  label: 'work',
+  checked: false,
+  progress: 0,
+  milestoneNo: 1,
+  milestone: [
+    {
+      title: 'dsdfdsf',
+      isCompleted: false
+    }
+  ]},
+  {  taskName: 'Task 2',
+  uid: 'Task2',
+  dateCreated: '',
+  expiry: '',
+  priority: 'Normal',
+  label: 'personal',
+  checked: false,
+  progress: 0,
+  milestoneNo: 1,
+  milestone: []},
+  ]
+  
   const [now,setNow] = useState(false)
   const [lastStep, setLastStep] = useState(false)
+  const [milestoneFinalState , setMilestoneFinalState] = useState(false)
+
+function reducer2(state,action){
+  debugger
+  console.log(`Type is ${action.type} Payload is: ${action.payload}`)
+  switch(action.type){
+    case 'add':
+      var newState = [...state,action.payload]
+    return (newState)
+
+    case 'milestone-comps':
+      let index = state.findIndex(item => action.uid === item.uid)
+      var newState = state
+      var newState1 = state
+      for(var i = 0 ; i < newState1[index].milestone.length ; i++){
+        if(newState1[index].milestone[i].title === action.payload){
+          newState1[index].milestone[i].isCompleted = !newState1[index].milestone[i].isCompleted
+        }
+      }
+      let j =0
+      for(var i = 0 ; i < newState1[index].milestone.length ; i++){
+        if(newState1[index].milestone.isCompleted === true){
+          j++
+        }
+      }
+      if(j +1 === newState1[index].milestone.length ){
+        newState1[index].checked = !newState1[index].checked
+      }
+      debugger
+    return (newState1)
+
+    case 'task-comp':
+       index = state.findIndex(item => action.uid === item.uid)
+       newState = state
+       newState[index].checked = !state[index].checked
+      return (newState)
+
+    default:
+      throw new Error("Error in 2nd Reducer")
+  }
+}
+const [todo,dispatch2] = useReducer(reducer2,initTodo)
 
   useEffect(() => {
     if(now && lastStep){
-      setTodo(stateHandler)
-      console.log("FINAL STATE IS PUSHING")
-      console.log(stateHandler)
+      
       setNow(false)
-      dispatch({type: 'reset'})
       setLastStep(false)
+
+      dispatch2({type: 'add' , payload: stateHandler})
+      console.log("FINAL STATE IS PUSHING")
+      
+      dispatch({type: 'reset'})
     }
   })
+
+
   var initState = {
   taskName: '',
   uid: '',
@@ -34,50 +108,42 @@ const App = () => {
   checked: false,
   progress: 0,
   milestoneNo: 0,
-  milestone: []
+  milestone: [],
 }
 
   function reducer(state,action){
 
-    
+    let newState = state
 
-    switch(action.type.childData2){
+    console.log(`Action Type: ${action.type} and the Payload is ${action.payload}`)
+
+    switch(action.type){
       case 'title': 
-        console.log(state)
-          var newState = state
-          newState.taskName = action.payload.childData
+          newState.taskName = action.payload
           return (newState)
 
       case 'date':
-        console.log(state)
-        var newState = state
-        newState.expiry = action.payload.childData
+        newState.expiry = action.payload
         return (newState)
 
       case 'label':
-        console.log(state)
-        var newState = state
-        newState.label = action.payload.childData
+        newState.label = action.payload
         return (newState)
 
-      case 'priority':
-        console.log(state)
-        var newState = state
-        newState.priority = action.payload.childData
+      case 'priority':   
+        newState.priority = action.payload
         return (newState)
 
       case 'milestone':
-        console.log(state)
         setNow(true)
-        var newState = state
         
         if(state.uid === ''){
           newState.uid = shortid.generate()
         }
         
-        newState.milestoneNo = newState.milestoneNo + 1
+        newState.milestoneNo = action.payload.length
 
-        newState.milestone =  action.payload.childData.map(item =>{
+        newState.milestone =  action.payload.map(item =>{
           return (
             {
               title: item,
@@ -85,20 +151,20 @@ const App = () => {
             }
           )
         })
-
         
         return (newState)
 
       case 'reset':
-        return(initState)
+        return (initState)
 
       default:
+        debugger
         throw new Error("Some Shit Gone Wrong, Please Check It Buddy");
     }
   }
   
 
-  const [todo,setTodo] = useState([])
+  
   const [stateHandler,dispatch] = useReducer(reducer,initState)
   
  
@@ -117,8 +183,9 @@ const App = () => {
       </div>
       <div style={{display: "flex", justifyContent: "center"}}>
       <div style={{width: '50%'}}>
-      {/* <TodoList todos={todos} deleteTodo={deleteTodo} /> */}
-
+      <Dispatch.Provider value={{value: [dispatch2,todo]}}>
+      <ExpandList todos={todo} />
+      </Dispatch.Provider>
       </div>
       </div>
     </div>
